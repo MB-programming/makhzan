@@ -60,10 +60,21 @@ $contact = $db->query("
     FROM contact_info WHERE is_active = 1 ORDER BY sort_order ASC
 ")->fetchAll();
 
+// Articles — أحدث 20 مقال نشط
+$articles = $db->query("
+    SELECT id, title, slug, excerpt, cover_image, category, tags,
+           is_featured, published_at
+    FROM articles
+    WHERE is_active = 1
+    ORDER BY is_featured DESC, sort_order ASC, published_at DESC
+    LIMIT 20
+")->fetchAll();
+
 echo json_encode([
     'success'  => true,
     'branches' => $branches,
     'brands'   => $brands,
     'social'   => $social,
     'contact'  => $contact,
+    'articles' => $articles,
 ], JSON_UNESCAPED_UNICODE);

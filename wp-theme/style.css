@@ -1,0 +1,350 @@
+/*
+Theme Name:  Makhazen Alenayah
+Theme URI:   https://makhazenalenaya.com
+Author:      Makhazen Alenayah
+Description: ثيم مخازن العناية - وجهتك الأولى للجمال والعناية. تصميم عربي بالكامل مع دعم RTL.
+Version:     1.0.0
+Text Domain: makhzan
+Tags:        rtl-language, custom-colors, one-page, beauty, arabic
+License:     Proprietary
+*/
+
+/* ============================================================
+   CSS Variables
+============================================================ */
+:root {
+  --gold:       #FFCF06;
+  --gold-dim:   #c9a200;
+  --gold-glow:  rgba(255, 207, 6, 0.3);
+  --gold-light: rgba(255, 207, 6, 0.1);
+  --black:      #000000;
+  --black-soft: #1a1a1a;
+  --white:      #FFFFFF;
+  --off-white:  #F8F7F4;
+  --gray-light: #F0EEE8;
+  --gray-mid:   #E0DDD5;
+  --gray-text:  #666666;
+  --gray-dark:  #333333;
+  --font:       'Tajawal', sans-serif;
+  --radius:     14px;
+  --radius-lg:  22px;
+  --transition: 0.3s ease;
+}
+
+/* ============================================================
+   Reset
+============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font);
+  background: var(--white);
+  color: var(--black);
+  direction: rtl;
+  text-align: right;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; border: none; background: none; font-family: var(--font); }
+
+/* ============================================================
+   Utility
+============================================================ */
+.container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+section { padding: 80px 0; }
+.section-header { text-align: center; margin-bottom: 48px; }
+.section-badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--gold-dim);
+  border: 1px solid rgba(201,162,0,0.4);
+  border-radius: 20px;
+  padding: 4px 14px;
+  margin-bottom: 14px;
+  background: rgba(255,207,6,0.06);
+}
+.section-title {
+  font-size: clamp(22px, 5vw, 36px);
+  font-weight: 800;
+  color: var(--black);
+  line-height: 1.3;
+  margin-bottom: 16px;
+}
+.title-line {
+  width: 50px;
+  height: 3px;
+  background: linear-gradient(to left, var(--gold), transparent);
+  margin: 0 auto;
+  border-radius: 2px;
+}
+
+/* ============================================================
+   Header
+============================================================ */
+.site-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 12px 20px;
+  background: transparent;
+  transition: background var(--transition), box-shadow var(--transition);
+}
+.site-header.scrolled {
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.header-logo img { height: 52px; width: auto; }
+.header-nav { display: flex; align-items: center; gap: 6px; }
+.header-nav a { font-size: 13px; font-weight: 600; color: var(--black); padding: 6px 12px; border-radius: 20px; transition: color var(--transition); }
+.header-nav a:hover { color: var(--gold-dim); }
+
+/* ============================================================
+   Hero Section — ذهبي
+============================================================ */
+.hero-section {
+  background: var(--gold);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 80px 20px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+.hero-logo-img { width: 260px; max-width: 80vw; }
+.hero-section h1 {
+  font-size: clamp(22px, 5vw, 36px);
+  font-weight: 800;
+  color: var(--black);
+  line-height: 1.7;
+}
+.hero-stats { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; justify-content: center; }
+.stat-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.stat-num { font-size: 36px; font-weight: 800; color: var(--black); }
+.stat-label { font-size: 12px; color: rgba(0,0,0,0.6); }
+.stat-divider { width: 1px; height: 40px; background: rgba(0,0,0,0.2); }
+
+/* ============================================================
+   Branches Section — ذهبي
+============================================================ */
+.branches-section { background: var(--gold); position: relative; overflow: hidden; }
+.branches-section .section-title { color: var(--black); }
+.branches-section .section-badge { color: var(--black-soft); border-color: rgba(0,0,0,0.2); background: rgba(0,0,0,0.06); }
+.branches-section .title-line { background: linear-gradient(to left, #000, transparent); }
+.branches-section .container { position: relative; z-index: 1; }
+
+.city-filter { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 36px; }
+.city-btn {
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--black);
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(0,0,0,0.12);
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.city-btn.active { background: var(--black); color: var(--gold); border-color: var(--black); }
+
+.branches-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+.branch-card {
+  background: var(--white);
+  border: 1px solid rgba(0,0,0,0.07);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+.branch-card:hover { border-color: var(--black); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+.branch-name { font-size: 15px; font-weight: 700; }
+.branch-address { font-size: 13px; color: var(--gray-text); line-height: 1.6; }
+.branch-map-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--black);
+  padding: 6px 14px;
+  border: 1.5px solid rgba(0,0,0,0.25);
+  border-radius: 20px;
+  transition: all var(--transition);
+}
+.branch-map-btn:hover { background: var(--black); color: var(--gold); }
+
+/* ============================================================
+   Brands Section — أوف وايت
+============================================================ */
+.brands-section { background: var(--off-white); position: relative; overflow: hidden; }
+.brands-section .container { position: relative; z-index: 1; }
+.brands-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.brand-card {
+  background: var(--white);
+  border: 1px solid var(--gray-mid);
+  border-radius: var(--radius);
+  padding: 16px 12px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 110px;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.brand-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+.brand-card:hover::after { transform: scaleX(1); }
+.brand-card:hover { border-color: var(--gold-dim); transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+.brand-logo { width: 100%; max-width: 90px; height: 44px; object-fit: contain; margin: 0 auto; }
+.brand-name { font-size: 10px; font-weight: 700; color: var(--black); }
+
+/* ============================================================
+   Articles Section — ذهبي
+============================================================ */
+.articles-section { background: var(--gold); position: relative; overflow: hidden; }
+.articles-section .section-title { color: var(--black); }
+.articles-section .section-badge { color: var(--black-soft); border-color: rgba(0,0,0,0.2); background: rgba(0,0,0,0.06); }
+.articles-section .title-line { background: linear-gradient(to left, #000, transparent); }
+.articles-section .container { position: relative; z-index: 1; }
+
+.articles-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+.article-card {
+  background: var(--white);
+  border: 1px solid rgba(0,0,0,0.07);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+.article-card:hover { border-color: var(--black); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+.article-card-cover { width: 100%; height: 180px; object-fit: cover; }
+.article-card-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.article-card-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.article-card-cat {
+  font-size: 11px; font-weight: 700;
+  background: var(--gold); color: var(--black);
+  border-radius: 10px; padding: 3px 10px;
+}
+.article-card-date { font-size: 11px; color: var(--gray-text); }
+.article-card-title { font-size: 15px; font-weight: 700; line-height: 1.5; }
+.article-card-excerpt { font-size: 13px; color: var(--gray-text); line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.article-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--black);
+  padding: 6px 14px;
+  border: 1.5px solid rgba(0,0,0,0.25);
+  border-radius: 20px;
+  transition: all var(--transition);
+  align-self: flex-start;
+  margin-top: auto;
+}
+.article-card-link:hover { background: var(--black); color: var(--gold); }
+
+/* Single Article */
+.single-article-hero { background: var(--gold); padding: 100px 0 60px; }
+.article-category-badge {
+  display: inline-block;
+  font-size: 12px; font-weight: 700;
+  color: var(--black-soft);
+  border: 1px solid rgba(0,0,0,0.2);
+  background: rgba(0,0,0,0.06);
+  border-radius: 20px;
+  padding: 4px 14px;
+  margin-bottom: 14px;
+}
+.single-article-title { font-size: clamp(24px, 5vw, 40px); font-weight: 800; line-height: 1.3; margin-bottom: 16px; }
+.single-article-meta { display: flex; align-items: center; gap: 16px; font-size: 12px; color: rgba(0,0,0,0.55); flex-wrap: wrap; }
+.single-article-cover { margin-top: 36px; border-radius: var(--radius-lg); overflow: hidden; }
+.single-article-cover img { width: 100%; max-height: 480px; object-fit: cover; }
+.single-article-content { background: var(--off-white); padding: 60px 0 80px; }
+.entry-content {
+  max-width: 780px;
+  margin: 0 auto;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 40px 32px;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+  line-height: 1.9;
+  font-size: 16px;
+  color: var(--gray-dark);
+}
+.entry-content h2 { font-size: 22px; font-weight: 800; color: var(--black); margin: 32px 0 12px; }
+.entry-content h3 { font-size: 18px; font-weight: 700; color: var(--black); margin: 24px 0 10px; }
+.entry-content p  { margin-bottom: 16px; }
+.entry-content ul, .entry-content ol { padding-right: 20px; margin-bottom: 16px; }
+.entry-content li { margin-bottom: 8px; }
+.entry-content img { border-radius: var(--radius); margin: 20px 0; }
+.entry-content a { color: var(--gold-dim); text-decoration: underline; }
+.entry-content blockquote { border-right: 4px solid var(--gold); padding: 12px 20px; margin: 20px 0; background: var(--gold-light); border-radius: 0 var(--radius) var(--radius) 0; font-style: italic; }
+
+/* ============================================================
+   Footer — ذهبي
+============================================================ */
+.site-footer { background: var(--gold); border-top: 3px solid var(--black); position: relative; overflow: hidden; }
+.footer-inner { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 40px 0 30px; text-align: center; }
+.footer-logo { height: 50px; width: auto; }
+.footer-copy { font-size: 12px; color: rgba(0,0,0,0.5); }
+.footer-links { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+.footer-links a { font-size: 13px; color: rgba(0,0,0,0.6); transition: color var(--transition); }
+.footer-links a:hover { color: var(--black); }
+
+/* ============================================================
+   Responsive
+============================================================ */
+@media (min-width: 600px) {
+  .branches-grid { grid-template-columns: repeat(2, 1fr); }
+  .brands-grid { grid-template-columns: repeat(4, 1fr); }
+  .articles-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 900px) {
+  .branches-grid { grid-template-columns: repeat(3, 1fr); }
+  .brands-grid { grid-template-columns: repeat(5, 1fr); }
+  .articles-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--off-white); }
+::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+::selection { background: var(--gold); color: #000; }

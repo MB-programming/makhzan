@@ -105,6 +105,7 @@ function switchTab(tab) {
     brands:   'البراندات',
     social:   'التواصل الاجتماعي',
     contact:  'معلومات التواصل',
+    articles: 'المقالات',
     tracking: 'كودات التتبع',
   };
   document.getElementById('topbar-title').textContent = titles[tab] || tab;
@@ -245,6 +246,9 @@ async function loadAll() {
     renderBrands(brands);
     renderSocial(social);
     renderContact(contact);
+
+    // Load articles separately
+    loadArticles();
   } catch (err) {
     showToast('فشل تحميل البيانات: ' + err.message, 'error');
   }
@@ -756,6 +760,177 @@ function statusBadge(active) {
 function truncate(str, len) {
   if (!str) return '';
   return str.length > len ? str.substring(0, len) + '...' : str;
+}
+
+// ============================================================
+// ARTICLES MANAGEMENT
+// ============================================================
+const ARTICLES_API = '../api/articles_api.php';
+
+async function loadArticles() {
+  try {
+    const res  = await fetch(`${ARTICLES_API}?admin=1`);
+    const data = await res.json();
+    if (!data.success) return;
+    renderArticles(data.data || []);
+  } catch { /* silent */ }
+}
+
+function renderArticles(rows) {
+  const tbody = document.getElementById('articles-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  rows.forEach((row, i) => {
+    const date = row.published_at
+      ? new Date(row.published_at).toLocaleDateString('ar-SA', { year: 'numeric', month: 'short', day: 'numeric' })
+      : '-';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${i + 1}</td>
+      <td><strong style="color:#fff">${row.title || '-'}</strong></td>
+      <td>${row.category || '-'}</td>
+      <td>${row.is_featured ? '<span style="color:var(--gold)"><i class="fas fa-star"></i> مميز</span>' : '-'}</td>
+      <td>${statusBadge(row.is_active)}</td>
+      <td>${date}</td>
+      <td>
+        <div class="actions">
+          <button class="btn-icon" title="تعديل" onclick="editArticle(${row.id})"><i class="fas fa-edit"></i></button>
+          <button class="btn-icon" title="تفعيل/تعطيل" onclick="toggleArticle(${row.id})"><i class="fas fa-toggle-on"></i></button>
+          <button class="btn-icon del" title="حذف" onclick="confirmDeleteArticle(${row.id})"><i class="fas fa-trash"></i></button>
+        </div>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+
+  const badge = document.getElementById('badge-articles');
+  const count = document.getElementById('articles-count');
+  if (badge) badge.textContent = rows.length;
+  if (count) count.textContent = `(${rows.length} مقال)`;
+}
+
+function openArticleModal(article) {
+  const overlay = document.getElementById('article-modal-overlay');
+  const title   = document.getElementById('article-modal-title');
+
+  // Reset
+  document.getElementById('article-form').reset();
+  document.getElementById('article-id').value = '';
+
+  if (article) {
+    title.textContent = 'تعديل المقال';
+    document.getElementById('article-id').value          = article.id;
+    document.getElementById('af-title').value            = article.title || '';
+    document.getElementById('af-category').value         = article.category || '';
+    document.getElementById('af-excerpt').value          = article.excerpt || '';
+    document.getElementById('af-body').value             = article.body || '';
+    document.getElementById('af-cover_image').value      = article.cover_image || '';
+    document.getElementById('af-tags').value             = article.tags || '';
+    document.getElementById('af-author_name').value      = article.author_name || '';
+    document.getElementById('af-seo_title').value        = article.seo_title || '';
+    document.getElementById('af-seo_description').value  = article.seo_description || '';
+    document.getElementById('af-seo_keywords').value     = article.seo_keywords || '';
+    document.getElementById('af-is_active').checked      = !!article.is_active;
+    document.getElementById('af-is_featured').checked    = !!article.is_featured;
+    if (article.published_at) {
+      const d = new Date(article.published_at);
+      const local = d.toISOString().slice(0, 16);
+      document.getElementById('af-published_at').value = local;
+    }
+  } else {
+    title.textContent = 'إضافة مقال';
+    document.getElementById('af-is_active').checked = true;
+    const now = new Date();
+    document.getElementById('af-published_at').value = now.toISOString().slice(0, 16);
+  }
+
+  overlay.classList.add('open');
+}
+
+function closeArticleModal() {
+  document.getElementById('article-modal-overlay').classList.remove('open');
+}
+
+document.getElementById('article-modal-overlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('article-modal-overlay')) closeArticleModal();
+});
+
+async function editArticle(id) {
+  try {
+    const res  = await fetch(`${ARTICLES_API}?admin=1&id=${id}`);
+    const data = await res.json();
+    if (data.success && data.data) openArticleModal(data.data);
+  } catch { showToast('فشل تحميل المقال', 'error'); }
+}
+
+async function saveArticle() {
+  const id    = document.getElementById('article-id').value;
+  const title = document.getElementById('af-title').value.trim();
+  if (!title) { showToast('العنوان مطلوب', 'error'); return; }
+
+  const body = {
+    title:           title,
+    category:        document.getElementById('af-category').value.trim(),
+    excerpt:         document.getElementById('af-excerpt').value.trim(),
+    body:            document.getElementById('af-body').value,
+    cover_image:     document.getElementById('af-cover_image').value.trim(),
+    tags:            document.getElementById('af-tags').value.trim(),
+    author_name:     document.getElementById('af-author_name').value.trim() || 'مخازن العناية',
+    seo_title:       document.getElementById('af-seo_title').value.trim(),
+    seo_description: document.getElementById('af-seo_description').value.trim(),
+    seo_keywords:    document.getElementById('af-seo_keywords').value.trim(),
+    is_active:       document.getElementById('af-is_active').checked ? 1 : 0,
+    is_featured:     document.getElementById('af-is_featured').checked ? 1 : 0,
+    published_at:    document.getElementById('af-published_at').value || null,
+  };
+
+  try {
+    let res;
+    if (id) {
+      res = await fetch(`${ARTICLES_API}?id=${id}`, {
+        method:  'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(body),
+      });
+    } else {
+      res = await fetch(ARTICLES_API, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(body),
+      });
+    }
+    const data = await res.json();
+    if (data.success) {
+      showToast(id ? 'تم تحديث المقال' : 'تم إضافة المقال');
+      closeArticleModal();
+      loadArticles();
+    } else {
+      showToast(data.message || 'فشلت العملية', 'error');
+    }
+  } catch { showToast('حدث خطأ', 'error'); }
+}
+
+async function toggleArticle(id) {
+  try {
+    const res  = await fetch(`${ARTICLES_API}?id=${id}`, { method: 'PATCH' });
+    const data = await res.json();
+    if (data.success) { showToast('تم تغيير الحالة'); loadArticles(); }
+  } catch { showToast('حدث خطأ', 'error'); }
+}
+
+let _deleteArticleId = null;
+function confirmDeleteArticle(id) {
+  _deleteArticleId = id;
+  document.getElementById('confirm-overlay').classList.add('open');
+  document.getElementById('confirm-delete-btn').onclick = async () => {
+    try {
+      const res  = await fetch(`${ARTICLES_API}?id=${_deleteArticleId}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.success) { showToast('تم الحذف'); loadArticles(); }
+    } catch { showToast('حدث خطأ', 'error'); }
+    closeConfirm();
+  };
 }
 
 // ============================================================

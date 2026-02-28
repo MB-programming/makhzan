@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="theme-color" content="#FFCF06" />
+  <title>مخازن العناية | المقالات</title>
+  <meta name="description" content="مخازن العناية - مقالات في عالم التجميل والعناية" />
+  <link rel="icon" type="image/x-icon" href="favicon.jpeg" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="assets/css/style.css" />
+
+  <!-- SEO — يتحدث ديناميكياً بعد تحميل المقال -->
+  <meta name="description" id="meta-description" content="" />
+  <meta property="og:title" id="og-title" content="" />
+  <meta property="og:description" id="og-description" content="" />
+  <meta property="og:image" id="og-image" content="" />
+  <meta property="og:type" content="article" />
+</head>
+<body>
+
+<!-- STICKY HEADER -->
+<header id="site-header" class="site-header visible scrolled">
+  <div class="header-inner">
+    <a href="index.html#hero" class="header-logo">
+      <img src="logob.webp" alt="مخازن العناية" />
+    </a>
+    <nav class="header-nav">
+      <a href="index.html#blogs" style="padding:6px 14px;font-size:13px;font-weight:700">
+        <i class="fas fa-arrow-right" style="margin-left:4px"></i> المقالات
+      </a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO / ARTICLE META -->
+<section class="article-hero" id="article-hero">
+  <div class="section-pattern-accent" aria-hidden="true">
+    <img src="pattern-3.webp" alt="" />
+  </div>
+
+  <div class="container article-hero-inner">
+    <a href="index.html#blogs" class="article-back">
+      <i class="fas fa-arrow-right"></i> العودة للمقالات
+    </a>
+
+    <div id="article-category-wrap"></div>
+    <h1 class="article-hero-title" id="article-title">جاري التحميل...</h1>
+    <div class="article-hero-meta" id="article-meta"></div>
+
+    <div class="article-cover-wrap" id="article-cover-wrap" style="display:none">
+      <img id="article-cover-img" src="" alt="" />
+    </div>
+  </div>
+</section>
+
+<!-- ARTICLE BODY -->
+<section class="article-content-section">
+  <div class="container article-content-inner">
+    <div class="article-body" id="article-body">
+      <!-- يتحمل ديناميكياً -->
+      <div style="text-align:center;padding:60px 0;color:var(--gray-text)">
+        <i class="fas fa-spinner fa-spin" style="font-size:32px;color:var(--gold-dim)"></i>
+        <p style="margin-top:16px">جاري تحميل المقال...</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-pattern">
+    <img src="pattern-5.webp" alt="" aria-hidden="true" />
+  </div>
+  <div class="container">
+    <div class="footer-inner">
+      <img src="logob.webp" alt="مخازن العناية" class="footer-logo" />
+      <p class="footer-copy">© 2025 مخازن العناية. جميع الحقوق محفوظة.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- WhatsApp Float -->
+<a href="https://wa.me/966920029921" target="_blank" rel="noopener noreferrer"
+  style="position:fixed;bottom:24px;right:24px;z-index:9999;width:60px;height:60px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(37,211,102,0.4);text-decoration:none">
+  <i class="fa-brands fa-whatsapp" style="color:#fff;font-size:28px"></i>
+</a>
+
+<script>
+(function () {
+  'use strict';
+
+  function getParam(name) {
+    return new URLSearchParams(window.location.search).get(name) || '';
+  }
+
+  function formatDate(dateStr) {
+    if (!dateStr) return '';
+    try {
+      return new Date(dateStr).toLocaleDateString('ar-SA', {
+        year: 'numeric', month: 'long', day: 'numeric',
+      });
+    } catch { return ''; }
+  }
+
+  function setMeta(article) {
+    const title = article.seo_title || article.title;
+    const desc  = article.seo_description || article.excerpt || '';
+    const img   = article.og_image || article.cover_image || '';
+
+    document.title = title + ' | مخازن العناية';
+    document.getElementById('meta-description').content  = desc;
+    document.getElementById('og-title').content          = title;
+    document.getElementById('og-description').content    = desc;
+    document.getElementById('og-image').content          = img;
+  }
+
+  function render(article) {
+    // Category
+    if (article.category) {
+      document.getElementById('article-category-wrap').innerHTML =
+        `<span class="article-category-badge">${article.category}</span>`;
+    }
+
+    // Title
+    document.getElementById('article-title').textContent = article.title;
+
+    // Meta
+    const metaItems = [];
+    if (article.published_at) metaItems.push(`<span><i class="fas fa-calendar-alt"></i> ${formatDate(article.published_at)}</span>`);
+    if (article.author_name)  metaItems.push(`<span><i class="fas fa-user"></i> ${article.author_name}</span>`);
+    if (article.view_count)   metaItems.push(`<span><i class="fas fa-eye"></i> ${Number(article.view_count).toLocaleString('ar-SA')} مشاهدة</span>`);
+    document.getElementById('article-meta').innerHTML = metaItems.join('');
+
+    // Cover
+    if (article.cover_image) {
+      const wrap = document.getElementById('article-cover-wrap');
+      const img  = document.getElementById('article-cover-img');
+      img.src    = article.cover_image;
+      img.alt    = article.title;
+      wrap.style.display = '';
+    }
+
+    // Body
+    document.getElementById('article-body').innerHTML =
+      article.body || '<p style="color:var(--gray-text);text-align:center;padding:40px 0">لا يوجد محتوى لهذا المقال</p>';
+
+    // SEO
+    setMeta(article);
+  }
+
+  function showError(msg) {
+    document.getElementById('article-title').textContent = msg;
+    document.getElementById('article-body').innerHTML =
+      `<div style="text-align:center;padding:60px 0;color:var(--gray-text)">
+        <i class="fas fa-exclamation-circle" style="font-size:40px;color:var(--gold-dim)"></i>
+        <p style="margin-top:16px;font-size:16px">${msg}</p>
+        <a href="index.html#blogs" style="display:inline-block;margin-top:20px;padding:10px 24px;background:var(--gold);color:var(--black);border-radius:20px;font-weight:700;text-decoration:none">
+          <i class="fas fa-arrow-right" style="margin-left:6px"></i> العودة للمقالات
+        </a>
+      </div>`;
+  }
+
+  async function loadArticle() {
+    const slug = getParam('slug');
+    if (!slug) { showError('لم يتم تحديد المقال'); return; }
+
+    try {
+      const res  = await fetch(`api/articles_api.php?slug=${encodeURIComponent(slug)}`);
+      const data = await res.json();
+      if (data.success && data.data) {
+        render(data.data);
+      } else {
+        showError('المقال غير موجود');
+      }
+    } catch {
+      showError('حدث خطأ أثناء تحميل المقال');
+    }
+  }
+
+  loadArticle();
+})();
+</script>
+</body>
+</html>
