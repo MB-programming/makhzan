@@ -16,18 +16,19 @@
       if (has_custom_logo()) {
           the_custom_logo();
       } else {
-          echo '<img src="' . esc_url(get_template_directory_uri()) . '/assets/images/logo.webp" alt="' . esc_attr(get_bloginfo('name')) . '" />';
+          $img = get_template_directory_uri() . '/assets/images/';
+          echo '<img src="' . esc_url($img . 'logob.webp') . '" alt="' . esc_attr(get_bloginfo('name')) . '" />';
       }
       ?>
     </a>
     <nav class="header-nav">
       <a href="<?php echo esc_url('https://wa.me/' . preg_replace('/\D/', '', get_option('makhzan_whatsapp', '966920029921'))); ?>"
-         style="padding:0;font-size:19px;margin-bottom:-6px">
+         style="padding:0;margin-bottom:-6px;font-size:19px">
         <i class="fa-brands fa-whatsapp"></i>
       </a>
-      <a href="tel:<?php echo esc_attr(makhzan_phone()); ?>" style="display:flex;align-items:center;gap:4px">
-        <i class="fa-solid fa-phone"></i><?php echo esc_html(makhzan_phone()); ?>
-      </a>
+      <i class="fa-solid fa-phone">
+        <a href="tel:<?php echo esc_attr(makhzan_phone()); ?>"><?php echo esc_html(makhzan_phone()); ?></a>
+      </i>
     </nav>
   </div>
 </header>
