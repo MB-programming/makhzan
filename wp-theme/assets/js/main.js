@@ -672,47 +672,24 @@ function renderBlogs(articles) {
 }
 
 // ============================================================
-// FETCH DATA FROM WP REST API
+// INIT DATA — السوشيال والبراندات والكونتاكت في PHP مباشرة
+// الفروع فقط تتحمّل من الـ fallback JS
 // ============================================================
-async function loadData() {
-  // لو مافي makhzanData، استخدم الـ fallback مباشرة
-  if (typeof makhzanData === 'undefined') {
-    loadFallbackData();
-    return;
-  }
+function loadData() {
+  // أنيمت الأقسام اللي اتعرضت من PHP
+  animateSocial();
+  animateBrands();
+  animateContact();
+  renderBlogs([]); // يشوف لو في SSR cards ويأنيمتها
 
-  try {
-    const res  = await fetch(makhzanData.restUrl + 'all');
-    const data = await res.json();
-
-    if (data.success) {
-      renderSocial(data.social     || []);
-      renderBranches(data.branches || []);
-      renderContact(data.contact   || []);
-      renderBrands(data.brands     || []);
-      renderBlogs(data.articles    || []);
-    } else {
-      loadFallbackData();
-    }
-  } catch {
-    console.warn('WP REST API unavailable, using fallback data');
-    loadFallbackData();
-  }
+  // الفروع من بيانات ثابتة مباشرة
+  loadFallbackBranches();
 }
 
 // ============================================================
 // FALLBACK — بيانات الفروع الحقيقية
 // ============================================================
-function loadFallbackData() {
-  const social = [
-    { platform: 'Instagram', platform_ar: 'انستقرام',  url: 'https://www.instagram.com/makhazenalenaya/',      username: '@makhazenalenaya', icon: 'fa-instagram' },
-    { platform: 'TikTok',    platform_ar: 'تيك توك',   url: 'https://www.tiktok.com/@makhazenalenaya',         username: '@makhazenalenaya', icon: 'fa-tiktok'    },
-    { platform: 'Snapchat',  platform_ar: 'سناب شات',  url: 'https://www.snapchat.com/add/makhazenalenaya',    username: 'makhazenalenaya',  icon: 'fa-snapchat'  },
-    { platform: 'Twitter',   platform_ar: 'تويتر / X', url: 'https://x.com/makhazenalenaya',                  username: '@makhazenalenaya', icon: 'fa-x-twitter' },
-    { platform: 'WhatsApp',  platform_ar: 'واتساب',    url: 'https://wa.me/966920029921',                     username: '920029921',        icon: 'fa-whatsapp'  },
-  ];
-
-  // ---- الفروع الحقيقية ----
+function loadFallbackBranches() {
   const branches = [
 
     // ===== الرياض =====
@@ -880,45 +857,8 @@ function loadFallbackData() {
     },
   ];
 
-  const contact = [
-    { type: 'phone',    value: '920029921',      label_ar: 'خدمة العملاء' },
-    { type: 'whatsapp', value: '+966920029921',  label_ar: 'واتساب'       },
-  ];
 
-  const brandNames = [
-    { en: "L'Oréal Paris",      ar: 'لوريال باريس'     },
-    { en: 'Maybelline New York', ar: 'ميبيلين نيويورك' },
-    { en: 'NYX Professional',   ar: 'ناكس برو ميك أب'  },
-    { en: 'MAC Cosmetics',       ar: 'ماك كوزمتيكس'    },
-    { en: 'Fenty Beauty',        ar: 'فينتي بيوتي'      },
-    { en: 'Charlotte Tilbury',   ar: 'شارلوت تيلبيري'   },
-    { en: 'Urban Decay',         ar: 'أربان ديكاي'      },
-    { en: 'NARS Cosmetics',      ar: 'نارس كوزمتيكس'    },
-    { en: 'Lancôme',             ar: 'لانكوم باريس'     },
-    { en: 'YSL Beauty',          ar: 'إيف سان لوران'    },
-    { en: 'Dior Beauty',         ar: 'ديور بيوتي'       },
-    { en: 'Chanel Beauty',       ar: 'شانيل بيوتي'      },
-    { en: 'Givenchy Beauty',     ar: 'جيفنشي بيوتي'     },
-    { en: 'Armani Beauty',       ar: 'أرماني بيوتي'     },
-    { en: 'Tom Ford Beauty',     ar: 'توم فورد بيوتي'   },
-    { en: 'Valentino Beauty',    ar: 'فالنتينو بيوتي'   },
-    { en: 'Burberry Beauty',     ar: 'باربيري بيوتي'    },
-    { en: 'Jo Malone London',    ar: 'جو مالون لندن'    },
-    { en: 'Parfums de Marly',    ar: 'بارفانز دي مارلي' },
-    { en: 'Kilian Paris',        ar: 'كيليان باريس'     },
-    { en: 'Prada Beauty',        ar: 'برادا بيوتي'      },
-    { en: 'Carolina Herrera',    ar: 'كارولينا هيريرا'  },
-    { en: 'Viktor&Rolf',         ar: 'فيكتور آند رولف'  },
-    { en: 'Narciso Rodriguez',   ar: 'ناركيسو رودريغيز' },
-    { en: 'Memo Paris',          ar: 'ميمو باريس'       },
-  ];
-
-  const brands = brandNames.map(b => ({ name_en: b.en, name_ar: b.ar, logo_url: null }));
-
-  renderSocial(social);
   renderBranches(branches);
-  renderContact(contact);
-  renderBrands(brands);
 }
 
 // ============================================================
