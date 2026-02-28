@@ -140,8 +140,76 @@ function makhzan_register_routes() {
         'callback'            => 'makhzan_get_settings',
         'permission_callback' => '__return_true',
     ]);
+
+    // ALL IN ONE — endpoint واحد يرجع كل الداتا (مثل get_data.php)
+    register_rest_route('makhzan/v1', '/all', [
+        'methods'             => 'GET',
+        'callback'            => 'makhzan_get_all',
+        'permission_callback' => '__return_true',
+    ]);
 }
 add_action('rest_api_init', 'makhzan_register_routes');
+
+// ============================================================
+// الفروع الافتراضية الحقيقية
+// ============================================================
+function makhzan_default_branches() {
+    return [
+        // ===== الرياض =====
+        ['name_ar'=>'مخازن العناية - حي الياسمين',       'city_ar'=>'الرياض',       'address_ar'=>'حي الياسمين، الرياض',                                              'phone'=>'920029921','map_url'=>'https://maps.app.goo.gl/DPWjJY7h9BfELBK79?g_st=ic',                           'working_hours'=>[]],
+        ['name_ar'=>'مخازن العناية- الدائري الشرقي',     'city_ar'=>'الرياض',       'address_ar'=>'الدائري الشرقي، الرياض',                                           'phone'=>'920029921','map_url'=>'https://maps.app.goo.gl/AxrTiYWXsfBPZs2C9?g_st=ic',                           'working_hours'=>[]],
+        ['name_ar'=>'مخازن العناية - حي الحمراء',        'city_ar'=>'الرياض',       'address_ar'=>'حي الحمراء، الرياض',                                               'phone'=>'920029921','map_url'=>'https://maps.app.goo.gl/tfDei6ktpz8f42zJA?g_st=ic',                          'working_hours'=>[]],
+        ['name_ar'=>'مخازن العناية - حي الربيع',         'city_ar'=>'الرياض',       'address_ar'=>'طريق الملك عبدالعزيز، حي الربيع، الرياض 13315',                   'phone'=>'920029921','map_url'=>'https://maps.app.goo.gl/uw1WGNYuJByYqppU7?g_st=ic',                           'working_hours'=>[]],
+        ['name_ar'=>'مخازن العناية - حي المحمدية',       'city_ar'=>'الرياض',       'address_ar'=>'طريق التخصصي، الغربية، حي المحمدية، الرياض 12362',                'phone'=>'920029921','map_url'=>'https://maps.app.goo.gl/3iWqnAPt8EFPVtH1A?g_st=ic',                           'working_hours'=>[]],
+        ['name_ar'=>'مخازن العناية - حي الفيحاء',        'city_ar'=>'الرياض',       'address_ar'=>'شارع خالد بن الوليد (طريق هارون الرشيد)، حي الفيحاء، الرياض 14254','phone'=>'920029921','map_url'=>'https://maps.app.goo.gl/WBePwEkF5ESpTLVn7?g_st=ic',               'working_hours'=>[]],
+        ['name_ar'=>'مخازن العناية - ظهرة لبن',          'city_ar'=>'الرياض',       'address_ar'=>'حي ظهرة لبن، الرياض',                                              'phone'=>'920029921','map_url'=>'https://maps.app.goo.gl/cjpPyW774zMmYkLi7?g_st=ic',                          'working_hours'=>[]],
+        // ===== حول المملكة =====
+        ['name_ar'=>'مخازن العناية - مكة - (الشرائع)',   'city_ar'=>'حول المملكة',  'address_ar'=>'Al Muhandes Umar Qadi, Makkah',                                     'phone'=>'920029921','map_url'=>'https://maps.app.goo.gl/3bzfVB1pDvXQtqc46',                                   'working_hours'=>[['day_type'=>'all','day_label'=>'يومياً','opens_at'=>'09:00','closes_at'=>'22:00','is_closed'=>false]]],
+        ['name_ar'=>'مخازن العناية - جدة - ( ابحر )',    'city_ar'=>'حول المملكة',  'address_ar'=>'حي, Khalid Ibn Al Walid St، طريق الإمام سعود',                     'phone'=>'920029921','map_url'=>'https://maps.app.goo.gl/XwYU2Mpf8ipFkzxa7?g_st=ic',                          'working_hours'=>[['day_type'=>'all','day_label'=>'يومياً','opens_at'=>'09:00','closes_at'=>'22:00','is_closed'=>false]]],
+        ['name_ar'=>'مخازن العناية - حفر الباطن',        'city_ar'=>'حول المملكة',  'address_ar'=>'2811 طريق فيصل بن عبدالعزيز، CNDF7745، Hafar Al Batin',           'phone'=>'920029921','map_url'=>'https://maps.app.goo.gl/M7b9e9q28zkFV8H67?g_st=ipc',                         'working_hours'=>[]],
+        ['name_ar'=>'مخازن العناية - جازان',              'city_ar'=>'حول المملكة',  'address_ar'=>'Corniche Rd, Jizan',                                                'phone'=>'920029921','map_url'=>'https://maps.app.goo.gl/byk6aX6Mko4kestT9?g_st=ipc',                         'working_hours'=>[]],
+        ['name_ar'=>'مخازن العناية - خميس مشيط',         'city_ar'=>'حول المملكة',  'address_ar'=>'7PF9+PF8, Prince Sultan Rd, Khamis Mushait',                        'phone'=>'920029921','map_url'=>'https://maps.app.goo.gl/EjWLixBzPt6SnnC18?g_st=ipc',                         'working_hours'=>[]],
+        ['name_ar'=>'مخازن العناية - تبوك',               'city_ar'=>'حول المملكة',  'address_ar'=>'طريق الملك عبدالله، الفيصلية الشمالية، تبوك 47913',               'phone'=>'920029921','map_url'=>'https://maps.app.goo.gl/P2RdZHZCvifsMxTr7',                                  'working_hours'=>[]],
+        ['name_ar'=>'مخازن العناية - الخبر',              'city_ar'=>'حول المملكة',  'address_ar'=>'EKGA7484، Al Khobar',                                               'phone'=>'920029921','map_url'=>'https://maps.app.goo.gl/NB1uMntPLAiGfbCL6',                                   'working_hours'=>[]],
+        ['name_ar'=>'مخازن العناية - حائل',               'city_ar'=>'حول المملكة',  'address_ar'=>'شارع الأمير سعود بن عبدالمحسن آل سعود، النقرة، حائل 55211',      'phone'=>'920029921','map_url'=>'https://maps.google.com/?q=مخازن+العناية،+حائل',                             'working_hours'=>[]],
+        ['name_ar'=>'مخازن العناية - مكة المكرمة',       'city_ar'=>'حول المملكة',  'address_ar'=>'شارع الخمسين، طريق الملك خالد',                                    'phone'=>'920029921','map_url'=>'https://maps.app.goo.gl/kiwaqfbjFSaCCzW1A',                                   'working_hours'=>[]],
+        ['name_ar'=>'مخازن العناية - الأحساء',            'city_ar'=>'حول المملكة',  'address_ar'=>'4359 طريق عين نجم، حي FMDA7293، Al Mubarraz',                      'phone'=>'920029921','map_url'=>'https://maps.app.goo.gl/mZcuxXo8ZqqQqtaA8',                                  'working_hours'=>[]],
+        ['name_ar'=>'مخازن العناية - الطائف',             'city_ar'=>'حول المملكة',  'address_ar'=>'شارع الخمسين، طريق الملك خالد، At Taif',                          'phone'=>'920029921','map_url'=>'https://maps.app.goo.gl/q79uN4MrVHdcqroz6',                                   'working_hours'=>[]],
+        ['name_ar'=>'مخازن العناية - جدة',                'city_ar'=>'حول المملكة',  'address_ar'=>'مقابل سبار ماركت، Anas Ibn Malik Rd',                              'phone'=>'920029921','map_url'=>'https://maps.app.goo.gl/3zw2UDqX7orh4UqG6?g_st=ic',                          'working_hours'=>[]],
+        ['name_ar'=>'مخازن العناية - الدمام ، حي النزهة','city_ar'=>'حول المملكة',  'address_ar'=>'8354 2965 طريق الأمير محمد بن فهد، حي النزهة، الدمام 32252',      'phone'=>'920029921','map_url'=>'https://maps.app.goo.gl/WWsEmVSRFJfezer4A?g_st=ic',                          'working_hours'=>[]],
+    ];
+}
+
+function makhzan_default_contact() {
+    return [
+        ['type' => 'phone',    'value' => '920029921',     'label_ar' => 'خدمة العملاء'],
+        ['type' => 'whatsapp', 'value' => '+966920029921', 'label_ar' => 'واتساب'      ],
+    ];
+}
+
+// ============================================================
+// /all — كل البيانات في طلب واحد
+// ============================================================
+function makhzan_get_all($request) {
+    $branches_res = makhzan_get_branches($request);
+    $brands_res   = makhzan_get_brands($request);
+    $articles_res = makhzan_get_articles($request);
+    $settings_res = makhzan_get_settings($request);
+
+    $branches = $branches_res->get_data()['data'] ?? [];
+    $brands   = $brands_res->get_data()['data']   ?? [];
+    $articles = $articles_res->get_data()['data'] ?? [];
+    $settings = $settings_res->get_data()['data'] ?? [];
+
+    return rest_ensure_response([
+        'success'  => true,
+        'branches' => empty($branches) ? makhzan_default_branches() : $branches,
+        'brands'   => $brands,
+        'articles' => $articles,
+        'social'   => $settings['social']  ?? [],
+        'contact'  => $settings['contact'] ?? makhzan_default_contact(),
+    ]);
+}
 
 function makhzan_get_branches($request) {
     $query = new WP_Query([
@@ -154,7 +222,6 @@ function makhzan_get_branches($request) {
 
     $branches = [];
     foreach ($query->posts as $post) {
-        $meta = get_post_meta($post->ID);
         $branches[] = [
             'id'             => $post->ID,
             'name_ar'        => $post->post_title,
@@ -166,6 +233,11 @@ function makhzan_get_branches($request) {
             'map_url'        => get_post_meta($post->ID, 'map_url', true),
             'working_hours'  => json_decode(get_post_meta($post->ID, 'working_hours', true) ?: '[]', true),
         ];
+    }
+
+    // لو مافي CPT مضافة، استخدم الافتراضية
+    if (empty($branches)) {
+        $branches = makhzan_default_branches();
     }
 
     return rest_ensure_response(['success' => true, 'data' => $branches]);
