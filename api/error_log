@@ -1,0 +1,15 @@
+[21-Feb-2026 19:12:10 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1366 Incorrect string value: '\xD8\xA7\xD9\x84\xD8\xB3...' for column 'day_label' at row 1 in /home/wida/public_html/makhazen.wida.sa/v3/api/branch_hours.php:109
+Stack trace:
+#0 /home/wida/public_html/makhazen.wida.sa/v3/api/branch_hours.php(109): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/wida/public_html/makhazen.wida.sa/v3/api/branch_hours.php on line 109
+[21-Feb-2026 19:12:21 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1366 Incorrect string value: '\xD8\xA7\xD9\x84\xD8\xB3...' for column 'day_label' at row 1 in /home/wida/public_html/makhazen.wida.sa/v3/api/branch_hours.php:109
+Stack trace:
+#0 /home/wida/public_html/makhazen.wida.sa/v3/api/branch_hours.php(109): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home/wida/public_html/makhazen.wida.sa/v3/api/branch_hours.php on line 109
+[27-Feb-2026 02:20:36 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 2006 MySQL server has gone away in /home/makhazenalenaya/public_html/api/settings.php:14
+Stack trace:
+#0 /home/makhazenalenaya/public_html/api/settings.php(14): PDO->query('SELECT `key`, v...')
+#1 {main}
+  thrown in /home/makhazenalenaya/public_html/api/settings.php on line 14
