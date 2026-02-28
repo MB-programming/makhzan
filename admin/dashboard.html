@@ -40,6 +40,11 @@
       <i class="fas fa-phone-alt"></i>
       <span>معلومات التواصل</span>
     </button>
+    <button class="nav-item" data-tab="articles">
+      <i class="fas fa-newspaper"></i>
+      <span>المقالات</span>
+      <span class="nav-badge" id="badge-articles">0</span>
+    </button>
     <button class="nav-item" data-tab="tracking">
       <i class="fab fa-google"></i>
       <span>كودات التتبع</span>
@@ -199,6 +204,39 @@
       </div>
     </div>
 
+    <!-- ======= ARTICLES TAB ======= -->
+    <div id="tab-articles" class="tab-content">
+      <div class="tab-toolbar">
+        <div class="toolbar-left">
+          <h2 class="tab-title">إدارة المقالات</h2>
+          <span class="count-label" id="articles-count"></span>
+        </div>
+        <button class="btn-add" onclick="openArticleModal()">
+          <i class="fas fa-plus"></i> إضافة مقال
+        </button>
+      </div>
+      <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="بحث في المقالات..." oninput="filterTable('articles-table', this.value)" />
+      </div>
+      <div class="table-wrap">
+        <table class="data-table" id="articles-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>العنوان</th>
+              <th>الفئة</th>
+              <th>مميز</th>
+              <th>الحالة</th>
+              <th>تاريخ النشر</th>
+              <th>الإجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="articles-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- ======= TRACKING TAB ======= -->
     <div id="tab-tracking" class="tab-content">
       <div class="tab-toolbar">
@@ -273,6 +311,97 @@
 
   </div><!-- /content-area -->
 </div><!-- /main-content -->
+
+<!-- ============================================================
+  ARTICLE MODAL
+============================================================ -->
+<div class="modal-overlay" id="article-modal-overlay">
+  <div class="modal" id="article-modal" style="max-width:760px;width:95%">
+    <div class="modal-header">
+      <h3 class="modal-title" id="article-modal-title">إضافة مقال</h3>
+      <button class="modal-close" onclick="closeArticleModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body" style="max-height:70vh;overflow-y:auto">
+      <form id="article-form" onsubmit="return false">
+        <input type="hidden" id="article-id" value="" />
+
+        <div class="form-grid-2">
+          <div class="form-group" style="grid-column:1/-1">
+            <label>العنوان <span style="color:red">*</span></label>
+            <input type="text" id="af-title" placeholder="عنوان المقال" required />
+          </div>
+          <div class="form-group">
+            <label>الفئة</label>
+            <input type="text" id="af-category" placeholder="مثال: جمال، عناية بالبشرة..." />
+          </div>
+          <div class="form-group">
+            <label>تاريخ النشر</label>
+            <input type="datetime-local" id="af-published_at" />
+          </div>
+          <div class="form-group" style="grid-column:1/-1">
+            <label>الوصف المختصر (مقتطف)</label>
+            <textarea id="af-excerpt" rows="3" placeholder="وصف قصير يظهر في قائمة المقالات..."></textarea>
+          </div>
+          <div class="form-group" style="grid-column:1/-1">
+            <label>المحتوى الكامل (HTML)</label>
+            <textarea id="af-body" rows="10" placeholder="<p>محتوى المقال...</p>" style="font-family:monospace;font-size:13px"></textarea>
+          </div>
+          <div class="form-group" style="grid-column:1/-1">
+            <label>رابط صورة الغلاف</label>
+            <input type="url" id="af-cover_image" placeholder="https://..." />
+          </div>
+          <div class="form-group">
+            <label>الوسوم (Tags)</label>
+            <input type="text" id="af-tags" placeholder="جمال, عناية, بشرة" />
+          </div>
+          <div class="form-group">
+            <label>الكاتب</label>
+            <input type="text" id="af-author_name" placeholder="مخازن العناية" />
+          </div>
+          <div class="form-group" style="grid-column:1/-1;display:flex;gap:20px;align-items:center;padding-top:8px">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:0">
+              <input type="checkbox" id="af-is_active" checked style="width:18px;height:18px;accent-color:var(--gold)" />
+              <span>مفعّل (يظهر للزوار)</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:0">
+              <input type="checkbox" id="af-is_featured" style="width:18px;height:18px;accent-color:var(--gold)" />
+              <span>مقال مميز (يظهر أولاً)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- SEO (collapsible) -->
+        <details style="margin-top:16px;border:1px solid var(--border-color,#e5e3dc);border-radius:10px;padding:16px">
+          <summary style="cursor:pointer;font-weight:700;color:var(--text-primary,#1a1a1a)">
+            <i class="fas fa-search" style="margin-left:6px"></i> إعدادات SEO (اختياري)
+          </summary>
+          <div class="form-grid-2" style="margin-top:16px">
+            <div class="form-group" style="grid-column:1/-1">
+              <label>عنوان SEO</label>
+              <input type="text" id="af-seo_title" placeholder="مختلف عن عنوان المقال..." />
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label>وصف SEO</label>
+              <textarea id="af-seo_description" rows="2" placeholder="وصف يظهر في نتائج البحث..."></textarea>
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label>كلمات مفتاحية</label>
+              <input type="text" id="af-seo_keywords" placeholder="كلمة1, كلمة2, كلمة3" />
+            </div>
+          </div>
+        </details>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeArticleModal()">إلغاء</button>
+      <button class="btn-save" onclick="saveArticle()">
+        <i class="fas fa-save"></i> حفظ المقال
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- ============================================================
   MODAL

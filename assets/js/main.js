@@ -597,156 +597,116 @@ function renderBrands(brands) {
   animateBrands();
 }
 
-function renderBlogs(branches) {
-    const grid       = document.getElementById('blogs-grid');
-    const filterWrap = document.getElementById('city-filter');
-  grid.innerHTML   = '';
+// ============================================================
+// RENDER BLOGS / ARTICLES — نفس خلفية الفروع (ذهبي)
+// ============================================================
+function renderBlogs(articles) {
+  const grid = document.getElementById('blogs-grid');
+  if (!grid) return;
 
-  // ---- بناء قائمة المدن مع الرياض أولاً ----
-  const cities = [];
-  branches.forEach(b => {
-    if (b.city_ar && !cities.find(c => c.ar === b.city_ar)) {
-      cities.push({ ar: b.city_ar, en: b.city_en });
-    }
-  });
+  grid.innerHTML = '';
 
-  const riyadh = cities.find(c => c.ar === 'الرياض');
-  const others = cities.filter(c => c.ar !== 'الرياض');
-  const orderedCities = riyadh ? [riyadh, ...others] : others;
+  if (!articles || articles.length === 0) {
+    grid.innerHTML = '<p style="text-align:center;color:rgba(0,0,0,0.5);padding:40px 0;grid-column:1/-1">لا توجد مقالات حالياً</p>';
+    return;
+  }
 
-  orderedCities.forEach(city => {
-    const btn = document.createElement('button');
-    btn.className    = 'city-btn';
-    btn.dataset.city = city.ar;
-    btn.textContent  = city.ar;
-    filterWrap.appendChild(btn);
-  });
-
-  // ---- ترتيب الرياض بترتيب محدد ثم الباقي ----
-  const riyadhOrder = ['الياسمين', 'الدائري', 'الحمراء', 'الربيع', 'المحمدية'];
-
-  const riyadhBranches = riyadhOrder
-    .map(keyword => branches.find(b => b.city_ar === 'الرياض' && b.name_ar.includes(keyword)))
-    .filter(Boolean);
-
-  const riyadhRest = branches.filter(
-    b => b.city_ar === 'الرياض' && !riyadhOrder.some(k => b.name_ar.includes(k))
-  );
-
-  const sortedBranches = [
-    ...riyadhBranches,
-    ...riyadhRest,
-    ...branches.filter(b => b.city_ar !== 'الرياض'),
-  ];
-
-  // ---- رسم كروت الفروع ----
-  sortedBranches.forEach(branch => {
-    const card = document.createElement('div');
-    card.className    = 'branch-card';
-    card.dataset.city = branch.city_ar || '';
-
-    const phone = branch.phone ? `
-      <div class="branch-phone">
-        <i class="fas fa-phone-alt"></i>
-        <a href="tel:${branch.phone}">${branch.phone}</a>
-      </div>` : '';
-
-    const mapBtn = branch.map_url ? `
-      <a href="${branch.map_url}" target="_blank" rel="noopener" class="branch-map-btn">
-        <i class="fas fa-map-marker-alt"></i> الموقع
-      </a>` : '';
-
-    const hoursHtml = buildHoursHtml(branch.working_hours || []);
-
-    card.innerHTML = `
-      <div class="branch-top">
-        <div class="branch-name">${branch.name_ar}</div>
-        <span class="branch-city-badge">${branch.city_ar || ''}</span>
-      </div>
-      <div class="branch-address">
-        <i class="fas fa-map-pin"></i>
-        <span>${branch.address_ar || ''}</span>
-      </div>
-      ${hoursHtml}
-      <div class="branch-footer">
-        ${phone}
-        ${mapBtn}
-      </div>
-    `;
-    grid.appendChild(card);
-  });
-
-  // ---- منطق عرض المزيد ----
-  const STEP = 5;
+  const STEP = 6;
   let visibleCount = STEP;
 
-  function applyVisibility(filterCity) {
-    const allCards = [...grid.querySelectorAll('.branch-card')];
-    const filtered = allCards.filter(c =>
-      filterCity === 'all' || c.dataset.city === filterCity
-    );
+  function formatDate(dateStr) {
+    if (!dateStr) return '';
+    try {
+      return new Date(dateStr).toLocaleDateString('ar-SA', {
+        year: 'numeric', month: 'long', day: 'numeric',
+      });
+    } catch { return ''; }
+  }
 
-    // إخفاء الكل أولاً
-    allCards.forEach(c => c.classList.add('hidden'));
+  function buildCard(article) {
+    const card = document.createElement('div');
+    card.className = 'blog-card';
 
-    // إظهار بقدر visibleCount
-    filtered.forEach((c, i) => {
-      if (i < visibleCount) c.classList.remove('hidden');
+    const coverHtml = article.cover_image
+      ? `<img src="${article.cover_image}" alt="${article.title}" class="blog-cover" loading="lazy" onerror="this.parentElement.querySelector('.blog-cover-placeholder').style.display='flex';this.style.display='none'">`
+      : '';
+    const placeholderHtml = `<div class="blog-cover-placeholder" style="${article.cover_image ? 'display:none' : ''}">✦</div>`;
+
+    const categoryHtml = article.category
+      ? `<span class="blog-category">${article.category}</span>`
+      : '<span></span>';
+
+    card.innerHTML = `
+      ${coverHtml}${placeholderHtml}
+      <div class="blog-body">
+        <div class="blog-meta">
+          ${categoryHtml}
+          <span class="blog-date">${formatDate(article.published_at)}</span>
+        </div>
+        <div class="blog-title">${article.title}</div>
+        ${article.excerpt ? `<div class="blog-excerpt">${article.excerpt}</div>` : ''}
+        <a href="article.html?slug=${article.slug}" class="blog-read-more">
+          اقرأ المزيد <i class="fas fa-arrow-left"></i>
+        </a>
+      </div>
+    `;
+    return card;
+  }
+
+  articles.forEach(article => grid.appendChild(buildCard(article)));
+
+  // ---- منطق عرض المزيد ----
+  function applyBlogVisibility() {
+    const allCards = [...grid.querySelectorAll('.blog-card')];
+    allCards.forEach((c, i) => {
+      if (i < visibleCount) {
+        c.classList.remove('hidden');
+      } else {
+        c.classList.add('hidden');
+      }
     });
 
-    // زرار عرض المزيد
-    let showMoreBtn = document.getElementById('show-more-branches');
-
-    if (filtered.length > visibleCount) {
+    let showMoreBtn = document.getElementById('show-more-blogs');
+    if (allCards.length > visibleCount) {
       if (!showMoreBtn) {
         showMoreBtn = document.createElement('button');
-        showMoreBtn.id        = 'show-more-branches';
+        showMoreBtn.id        = 'show-more-blogs';
         showMoreBtn.className = 'show-more-btn';
         showMoreBtn.innerHTML = '<i class="fas fa-chevron-down"></i> عرض المزيد';
         grid.parentElement.appendChild(showMoreBtn);
 
         showMoreBtn.addEventListener('click', () => {
           visibleCount += STEP;
-          const activeCity = filterWrap.querySelector('.city-btn.active')?.dataset.city || 'all';
-          applyVisibility(activeCity);
-
-          // أنيميشن للكروت الجديدة
+          applyBlogVisibility();
           gsap.fromTo(
-            grid.querySelectorAll('.branch-card:not(.hidden)'),
+            grid.querySelectorAll('.blog-card:not(.hidden)'),
             { opacity: 0, y: 20 },
-            { opacity: 1, y: 0, stagger: 0.05, duration: 0.5, ease: 'power3.out' }
+            { opacity: 1, y: 0, stagger: 0.06, duration: 0.5, ease: 'power3.out' }
           );
         });
       }
       showMoreBtn.style.display = 'flex';
-    } else {
-      if (showMoreBtn) showMoreBtn.style.display = 'none';
+    } else if (showMoreBtn) {
+      showMoreBtn.style.display = 'none';
     }
   }
 
-  // تطبيق الأولي
-  applyVisibility('all');
+  applyBlogVisibility();
 
-  // ---- فلتر المدن ----
-  filterWrap.addEventListener('click', (e) => {
-    const btn = e.target.closest('.city-btn');
-    if (!btn) return;
-
-    filterWrap.querySelectorAll('.city-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    visibleCount = STEP; // إعادة ضبط العداد
-    const selectedCity = btn.dataset.city;
-    applyVisibility(selectedCity);
-
-    gsap.fromTo(
-      grid.querySelectorAll('.branch-card:not(.hidden)'),
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, stagger: 0.05, duration: 0.5, ease: 'power3.out' }
-    );
+  // ---- أنيميشن ----
+  ScrollTrigger.create({
+    trigger: '.blogs-section',
+    start: 'top 75%',
+    onEnter: () => {
+      gsap.to('.blog-card:not(.hidden)', {
+        opacity: 1,
+        y: 0,
+        stagger: 0.06,
+        duration: 0.7,
+        ease: 'power3.out',
+      });
+    },
   });
-
-  animateBranches();
 }
 
 // ============================================================
@@ -762,7 +722,7 @@ async function loadData() {
       renderBranches(data.branches || []);
       renderContact(data.contact || []);
       renderBrands(data.brands || []);
-      renderBlogs(data.blogs || []);
+      renderBlogs(data.articles || []);
     } else {
       console.warn('API returned error, using fallback');
       loadFallbackData();

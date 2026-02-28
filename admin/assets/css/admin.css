@@ -843,9 +843,52 @@ input, select, textarea { font-family: var(--font); }
 }
 
 .site-header.scrolled {
-    background: rgba(14, 109, 133, 0.7); /* قللنا الشفافية هنا لـ 0.7 عشان البلور يظهر */
+    background: rgba(14, 109, 133, 0.7);
     backdrop-filter: blur(12px) !important;
     -webkit-backdrop-filter: blur(12px);
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
     padding: 8px 20px;
+}
+
+/* ============================================================
+   ARTICLE MODAL FORM
+============================================================ */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.form-grid-2 .form-group { margin-bottom: 0; }
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+.form-group input[type="text"],
+.form-group input[type="url"],
+.form-group input[type="datetime-local"],
+.form-group textarea {
+  width: 100%;
+  background: #0c6070;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 13px;
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  font-family: var(--font);
+  direction: rtl;
+  transition: border-color var(--transition);
+}
+.form-group input[type="text"]:focus,
+.form-group input[type="url"]:focus,
+.form-group input[type="datetime-local"]:focus,
+.form-group textarea:focus { border-color: var(--gold); }
+.form-group textarea { resize: vertical; min-height: 80px; }
+#article-modal-overlay { display: none; }
+#article-modal-overlay.open { display: flex; }
+@media (max-width: 600px) {
+  .form-grid-2 { grid-template-columns: 1fr; }
 }
